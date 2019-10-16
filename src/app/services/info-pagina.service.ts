@@ -5,16 +5,20 @@ import { InfoPagina } from '../interfaces/info-pagina.interface';
 @Injectable({
   providedIn: 'root'
 })
+
 export class InfoPaginaService {
 
   info: InfoPagina = { };
   cargada = false;
 
-
+  equipo: any[] = [];
 
   constructor( private http: HttpClient) {
+    this.cargarInfo();
+    this.cargarEquipo();
+  }
 
-    //  console.log('Servicio infoPagina listo');
+  private cargarInfo() {
 
     // Leer el JSON
 
@@ -23,9 +27,18 @@ export class InfoPaginaService {
 
         this.cargada = true;
         this.info = resp;
-        console.log(resp);
 
     });
+  }
 
-   }
+  private cargarEquipo() {
+
+    this.http.get('https://angular-html-96fce.firebaseio.com/equipo.json')
+      .subscribe ( (resp: any[]) => {
+
+        this.equipo = resp;
+        console.log(resp);
+      });
+  }
+
 }
