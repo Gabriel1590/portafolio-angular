@@ -12,16 +12,20 @@ export class ProductosService {
 
   constructor( private http: HttpClient ) {
     this.cargarProductos();
-   }
+  }
 
   private cargarProductos() {
     this.http.get('https://angular-html-96fce.firebaseio.com/productos_idx.json')
       .subscribe( (resp: Producto[]) => {
-        
         this.productos = resp;
         this.cargando = false;
-        console.log(resp);
-
       });
   }
+
+  getProducto( id: string ){
+
+    return this.http.get(`httpsangular-html-96fce.firebaseio.com/productos/${ id }.json`);
+    
+  }
+
 }
