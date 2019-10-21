@@ -9,7 +9,7 @@ export class ProductosService {
 
   cargando = true;
   productos: Producto[] = [];
-  productosFiltrado: Producto[] = []
+  productosFiltrado: Producto[] = [];
 
   constructor( private http: HttpClient ) {
     this.cargarProductos();
