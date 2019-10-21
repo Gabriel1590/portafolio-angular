@@ -9,23 +9,60 @@ export class ProductosService {
 
   cargando = true;
   productos: Producto[] = [];
+  productosFiltrado: Producto[] = []
 
   constructor( private http: HttpClient ) {
     this.cargarProductos();
   }
 
   private cargarProductos() {
-    this.http.get('https://angular-html-96fce.firebaseio.com/productos_idx.json')
-      .subscribe( (resp: Producto[]) => {
-        this.productos = resp;
-        this.cargando = false;
-      });
+
+    return new Promise( ( resolve, reject ) => {
+
+      this.http.get('https://angular-html-96fce.firebaseio.com/productos_idx.json')
+        .subscribe( (resp: Producto[]) => {
+          this.productos = resp;
+          this.cargando = false;
+          resolve();
+        });
+
+    });
+
   }
 
-  getProducto( id: string ){
+  getProducto( id: string ) {
 
-    return this.http.get(`httpsangular-html-96fce.firebaseio.com/productos/${ id }.json`);
-    
+    return this.http.get(`https://angular-html-96fce.firebaseio.com/productos/${ id }.json`);
+  }
+
+  buscarProducto( termino: string ) {
+
+    if (this.productos.length === 0 ) {
+      // cargar Productos
+      this.cargarProductos().then( () => {
+        // ejecutar despues de tener los productos
+        this.filtrarProducto( termino );
+      });
+    } else {
+      this.filtrarProducto( termino );
+    }
+
+  }
+
+  private filtrarProducto( termino: string ) {
+    // console.log(this.productos);
+    this.productosFiltrado = [];
+    termino = termino.toLocaleLowerCase();
+
+    this.productos.forEach( prod => {
+
+      const tituloLower = prod.titulo.toLocaleLowerCase();
+
+      if ( prod.categoria.indexOf( termino ) >= 0 || tituloLower.indexOf( termino ) >= 0 ) {
+        this.productosFiltrado.push (prod);
+      }
+
+    } );
   }
 
 }
